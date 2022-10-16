@@ -1,0 +1,85 @@
+// Returns a random DNA base
+const returnRandBase = () => {
+  const dnaBases = ["A", "T", "C", "G"];
+  return dnaBases[Math.floor(Math.random() * 4)];
+};
+
+// Returns a random single stand of DNA containing 15 bases
+const mockUpStrand = () => {
+  const newStrand = [];
+  for (let i = 0; i < 15; i++) {
+    newStrand.push(returnRandBase());
+  }
+  return newStrand;
+};
+
+const pAequorFactory = function (number, dnaArray) {
+  return {
+    specimenNum: number,
+    dna: dnaArray,
+    mutate() {
+      let currentBase = Math.floor(Math.random() * 15);
+      let generatedBase = returnRandBase();
+      if (generatedBase === this.dna[currentBase]) {
+        console.log(`DNA is identical, does not change.`);
+        return this.dna;
+      } else {
+        console.log(`DNA has changed`);
+        console.log(
+          `The orginal DNA base was: ${this.dna[currentBase]} at index: ${currentBase}`
+        );
+        this.dna[currentBase] = generatedBase;
+        console.log(`New mutated DNA base is ${generatedBase}`);
+        return this.dna;
+      }
+    },
+     compareDNA(pAequorObject) {
+      console.log(`MY DNA sequence: ${this.dna}`);
+      console.log(`Other specimens DNA sequence: ${pAequorObject.dna}`);
+
+      if (this.dna === pAequorObject.dna) {
+        console.log(`Specimen ${pAequorObject.specimenNum} has an idential DNA sequence.`);
+      } else {
+        let identicalBases= 0;
+        
+        for (let i = 0; i < this.dna.length; i++) {
+          if (this.dna[i] === pAequorObject.dna[i]) identicalBases++;
+        }
+        
+        // Get the percentage of identical bases and return the value rounded to the second decimal place.
+        console.log(`Total DNA in common between specimen ${this.specimenNum} and specimen ${pAequorObject.specimenNum}: 
+        ${(identicalBases / this.dna.length).toFixed(2)}%`);
+
+      }
+    },
+     willLikelySurvive() {
+      dnaBaseCounter = 0;
+      this.dna.forEach(dnaBase => {
+        if (dnaBase === 'G' || dnaBase === 'C') dnaBaseCounter++;
+      });
+
+      // (x / y) * 100 then round to %2.
+      const survivalPercentage = ((dnaBaseCounter / this.dna.length) * 100).toFixed(2);
+      if (survivalPercentage >= 60) {
+        console.log(`Greater chance of survival. Percentage of C and G bases is ${survivalPercentage}%`);
+      } else {
+        console.log(`Lesser chance of survival. Percentage of C and G bases is ${survivalPercentage}%`);
+      }
+    }
+
+    }
+  };
+//test
+const pAequor = pAequorFactory(99, mockUpStrand());
+ console.log(`pAequor BEFORE mutation\nSpecimen: ${pAequor.specimenNum}\nDNA Strand: ${pAequor.dna}\n`);
+pAequor.mutate();
+ console.log(`pAequor AFTER mutation\nSpecimen: ${pAequor.specimenNum}\nDNA Strand: ${pAequor.dna}`);
+
+const pAequor1 = pAequorFactory(999, mockUpStrand());
+const pAequor2 = pAequorFactory(1000, mockUpStrand());
+
+pAequor1.compareDNA(pAequor2);
+console.log('p. Aequor 1: ');
+pAequor1.willLikelySurvive();
+console.log('p. Aequor 2: ');
+pAequor2.willLikelySurvive();
